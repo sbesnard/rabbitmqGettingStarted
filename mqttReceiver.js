@@ -7,7 +7,7 @@ const mqtt = require('mqtt');
   }
 
   const client = mqtt.connect(`mqtts://${process.env.RABBITMQ_USERNAME}:${process.env.RABBITMQ_PASSWORD}@${process.env.RABBITMQ_HOST}:1884`);
-  const topic = 'test-mqtt';
+  const topic = 'groups/*';
 
   // On connect
   client.on(

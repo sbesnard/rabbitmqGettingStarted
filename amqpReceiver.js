@@ -6,7 +6,7 @@ const amqplib = require('amqplib');
     throw Error('You should first fill the .env-example file and rename it to .env');
   }
 
-  const queue = 'test-amqp';
+  const queue = 'actions';
 
   const connection = await amqplib.connect(
     {
@@ -22,11 +22,17 @@ const amqplib = require('amqplib');
   const channel = await connection.createChannel();
 
   console.log('Waiting for messages... You can send one by running `node amqpSender.js in an other terminal.`');
-  await channel.assertQueue(queue, { durable: false });
+  channel.bindQueue(queue, 'amq.topic', '*');
+  await channel.prefetch(1);
+  
   channel.consume(
     queue,
-    message => console.log(`Received on queue ${queue}: ${message.content.toString()}`),
-    { noAck: true },
+    async message => {
+      console.log(`Received on queue ${queue}: ${message.content.toString()}`);
+      await sleep(5000);
+
+      channel.ack(message)},
+    { noAck: false},
     (err, res) => console.log({ err, res })
   );
 
@@ -36,3 +42,11 @@ const amqplib = require('amqplib');
   console.error(error);
   process.exit(1);
 });
+
+function sleep(milliseconds) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
+}

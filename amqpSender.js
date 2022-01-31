@@ -7,7 +7,7 @@ const amqplib = require('amqplib');
   }
 
   const message = 'It\'s ' + Date();
-  const queue = 'test-amqp';
+
 
   const connection = await amqplib.connect(
     {
@@ -20,10 +20,12 @@ const amqplib = require('amqplib');
   console.log('Connected');
   process.once('SIGTERM', () => connection.close());
 
+    topic = "amq.topic";
   const channel = await connection.createChannel();
-  await channel.assertQueue(queue, { durable: false });
-  await channel.sendToQueue(queue, Buffer.from(message), {});
-  console.log(`Sent message "${message}" to queue ${queue}`);
+  
+
+  await channel.publish(topic,'groups.aaa', Buffer.from(message), {});
+  console.log(`Sent message "${message}" to topic ${topic}`);
 
   await channel.close();
   await connection.close();
