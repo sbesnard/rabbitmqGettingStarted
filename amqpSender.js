@@ -20,11 +20,13 @@ const amqplib = require('amqplib');
   console.log('Connected');
   process.once('SIGTERM', () => connection.close());
 
-    topic = "amq.topic";
+  const queue = "amq.topic"; // queue permettant d'envoyer des messages vers le pont MQTT
+  const topic = "group.aaa"; // Dans AMQP, le séparateur est '.'. Cela se traduit en MQTT par un '/'
+  
   const channel = await connection.createChannel();
   
 
-  await channel.publish(topic,'groups.aaa', Buffer.from(message), {});
+  await channel.publish(queue,topic, Buffer.from(message), {});
   console.log(`Sent message "${message}" to topic ${topic}`);
 
   await channel.close();
