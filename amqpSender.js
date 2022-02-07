@@ -6,22 +6,23 @@ const amqplib = require('amqplib');
     throw Error('You should first fill the .env-example file and rename it to .env');
   }
 
-  const message = 'It\'s ' + Date();
+  const message = '{"type":"USER"}';
 
 
   const connection = await amqplib.connect(
     {
       protocol: 'amqps',
       hostname: process.env.RABBITMQ_HOST,
-      username: process.env.RABBITMQ_USERNAME,
-      password: process.env.RABBITMQ_PASSWORD
+      username: process.env.RABBITMQ_DEV_PUBLISHER_USERNAME,
+      password: process.env.RABBITMQ_DEV_PUBLISHER_PASSWORD,
+      vhost: "dev"
     }
   );
   console.log('Connected');
   process.once('SIGTERM', () => connection.close());
 
   const queue = "amq.topic"; // queue permettant d'envoyer des messages vers le pont MQTT
-  const topic = "group.aaa"; // Dans AMQP, le séparateur est '.'. Cela se traduit en MQTT par un '/'
+  const topic = "groups.aaa"; // Dans AMQP, le séparateur est '.'. Cela se traduit en MQTT par un '/'
   
   const channel = await connection.createChannel();
   
