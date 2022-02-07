@@ -2,12 +2,12 @@ require('dotenv').config()
 const mqtt = require('mqtt');
 
 (async () => {
-  if (!process.env.jupyter notebook) {
+  if (!process.env.RABBITMQ_HOST) {
     throw Error('You should first fill the .env-example file and rename it to .env');
   }
 
-  const client = mqtt.connect(`mqtts://${process.env.RABBITMQ_USERNAME}:${process.env.RABBITMQ_PASSWORD}@${process.env.RABBITMQ_HOST}:1884`);
-  const topic = 'groups/*';
+  const client = mqtt.connect(`mqtts://${process.env.MQTT_USER}:${process.env.MQTT_PASSWORD}@${process.env.MQTT_SERVER_URL}:${process.env.MQTT_PORT}`);
+  const topic = 'dev/groups/+';
 
   // On connect
   client.on(
