@@ -2,7 +2,7 @@ require('dotenv').config()
 const mqtt = require('mqtt');
 
 (async () => {
-  if (!process.env.RABBITMQ_HOST) {
+  if (!process.env.jupyter notebook) {
     throw Error('You should first fill the .env-example file and rename it to .env');
   }
 
